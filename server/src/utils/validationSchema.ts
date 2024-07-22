@@ -2,6 +2,7 @@
 import { isValidObjectId } from 'mongoose';
 import *as yup from 'yup';
 import categories from './categories';
+import { parseISO } from 'date-fns';
 
 const myEmailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-.]+\.[a-zA-Z]{2,4}$/
 const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)[A-Za-z\d\W]{8,}$/;
@@ -68,6 +69,14 @@ export const verifyTokenSchema = yup.object({
     category: yup.string().oneOf(categories, "Invalid Category").required("Category is missing"),
     description: yup.string().required("Description is missing"),
     
-    // purchaseDate: yup
-    // .date().required("Purchasing date is missing"),
+    purchaseDate: yup.string().transform((value)  => {
+      try {
+       return parseISO(value)
+      
+      } catch (error) {
+        return ''
+      }
+      
+    })
+    .required("Purchasing date is missing"),
   });
